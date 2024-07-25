@@ -3,14 +3,14 @@ package common
 import "github.com/gin-gonic/gin"
 
 type BaseResponse struct {
-	Status  bool         `json:"status"`
-	Code    int32        `json:"code"`
-	Message string       `json:"message"`
-	Data    *interface{} `json:"data,omitempty"`
+	Status  bool   `json:"status"`
+	Code    int32  `json:"code"`
+	Message string `json:"message"`
+	Data    any    `json:"data,omitempty"`
 }
 
 // SuccessResponse generates a success response
-func SuccessResponse(c *gin.Context, code int32, message string, data *interface{}) {
+func SuccessResponse(c *gin.Context, code int32, message string, data any) {
 	c.JSON(int(code), BaseResponse{
 		Status:  true,
 		Code:    code,

@@ -3,6 +3,7 @@ package services
 import (
 	entity "api-center/Entity"
 	"api-center/models"
+	"api-center/utils"
 	"errors"
 	"time"
 
@@ -105,4 +106,35 @@ func CreateUser(db *gorm.DB, user *models.CreateUserRequest) error {
 	}
 
 	return nil
+}
+
+func Login(db *gorm.DB, user *models.LoginRequest) (*models.LoginResponse, error) {
+	var existUser *entity.User
+	if err := db.Model(&entity.User{}).Select("id", "user_name", "email", "password").Where("user_name = ?", *user.UserName).Scan(&existUser).Error; err != nil {
+		return nil, err
+	}
+
+	if existUser == nil {
+		return nil, errors.New("user not found")
+	}
+
+	// check password
+	if !utils.CheckPasswordHash(*user.Password, existUser.Password) {
+		return nil, errors.New("password not match")
+	}
+
+	// generate token
+	token, err := utils.GenerateToken(existUser.UserName)
+	if err != nil {
+		return nil, err
+	}
+
+	data := &models.LoginResponse{
+		Token:   &token,
+		UseName: &existUser.UserName,
+		Email:   &existUser.Email,
+		ID:      &existUser.ID,
+	}
+
+	return data, nil
 }

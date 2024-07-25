@@ -12,11 +12,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type Handler struct {
+type UserHandler struct {
 	DB *gorm.DB
 }
 
-func (h *Handler) CreateUser(c *gin.Context) {
+func (h *UserHandler) CreateUser(c *gin.Context) {
 	var user models.CreateUserRequest
 	if err := c.ShouldBindJSON(&user); err != nil {
 		common.ErrorResponse(c, http.StatusBadRequest, "invalid request", err.Error())
@@ -57,4 +57,31 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		return
 	}
 	common.SuccessResponse(c, http.StatusCreated, "user created successfully", nil)
+}
+
+func (h *UserHandler) Login(c *gin.Context) {
+	var user models.LoginRequest
+	if err := c.ShouldBindJSON(&user); err != nil {
+		common.ErrorResponse(c, http.StatusBadRequest, "invalid request", err.Error())
+		return
+	}
+
+	if user.UserName == nil || user.Password == nil {
+		missingField := ""
+		switch {
+		case user.UserName == nil:
+			missingField = "user_name"
+		case user.Password == nil:
+			missingField = "password"
+		}
+		common.ErrorResponse(c, http.StatusBadRequest, "invalid request", missingField+" is required")
+		return
+	}
+
+	data, err := services.Login(h.DB, &user)
+	if err != nil {
+		common.ErrorResponse(c, http.StatusBadRequest, "invalid request", err.Error())
+		return
+	}
+	common.SuccessResponse(c, http.StatusOK, "user logged in successfully", data)
 }
