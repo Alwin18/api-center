@@ -38,6 +38,7 @@ func ProjectRoute(r *gin.Engine, db *gorm.DB) {
 func SetupRouter(ctx context.Context, db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 	r.Use(middleware.Logger())
+	r.Use(middleware.CORSMiddleware())
 	r.Use(gin.Recovery())
 
 	UserRoute(r, db)
