@@ -19,3 +19,11 @@ type User struct {
 func (User) TableName() string {
 	return "users"
 }
+
+func (*User) GetUsername(db *gorm.DB, id int) string {
+	var username string
+	if err := db.Model(&User{}).Select("user_name").Where("id = ?", id).First(&username).Error; err != nil {
+		return ""
+	}
+	return username
+}

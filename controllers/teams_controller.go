@@ -39,3 +39,22 @@ func (h *TeamHandler) GetListTeams(c *gin.Context) {
 	}
 	common.SuccessResponse(c, http.StatusOK, "teams fetched successfully", teams)
 }
+
+func (h *TeamHandler) CreateTeam(c *gin.Context) {
+	var request models.CreateTeamsRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		common.ErrorResponse(c, http.StatusBadRequest, "invalid request", err.Error())
+		return
+	}
+
+	if request.UserID == 0 || request.TeamName == "" {
+		common.ErrorResponse(c, http.StatusBadRequest, "invalid request", "user_id, team_name is required")
+		return
+	}
+
+	if err := services.CreateTeam(h.DB, request); err != nil {
+		common.ErrorResponse(c, http.StatusInternalServerError, "internal server error", err.Error())
+		return
+	}
+	common.SuccessResponse(c, http.StatusOK, "team created successfully", nil)
+}

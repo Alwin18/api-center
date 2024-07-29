@@ -9,3 +9,9 @@ type ListTeamResponse struct {
 	TeamName string `json:"team_name"`
 	Icon     string `json:"icon"`
 }
+
+type CreateTeamsRequest struct {
+	TeamName string `json:"team_name"`
+	Icon     string `json:"icon"`
+	UserID   int    `json:"user_id"`
+}

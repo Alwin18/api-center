@@ -8,6 +8,7 @@ type ListProjectsResponse struct {
 	ID          uint   `json:"id"`
 	ProjectName string `json:"project_name"`
 	Icon        string `json:"icon"`
+	ProjectType string `json:"project_type"`
 }
 
 type CreateProjectRequest struct {

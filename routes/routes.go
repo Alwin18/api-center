@@ -22,6 +22,7 @@ func TeamsRoute(r *gin.Engine, db *gorm.DB) {
 	// Create a group for api/v1
 	v1 := r.Group("/api/v1")
 	v1.GET("/teams", h.GetListTeams)
+	v1.POST("/team", h.CreateTeam)
 }
 
 func ProjectRoute(r *gin.Engine, db *gorm.DB) {

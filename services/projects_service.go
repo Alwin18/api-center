@@ -11,7 +11,7 @@ import (
 func GetListProjects(db *gorm.DB, teamId int) (response []*models.ListProjectsResponse, err error) {
 	var projects []*entity.Project
 
-	if err := db.Model(&entity.Project{}).Select("id", "project_name", "icon").Where("team_id = ?", teamId).Order("updated_at desc").Find(&projects).Error; err != nil {
+	if err := db.Model(&entity.Project{}).Select("id", "project_name", "icon", "project_type").Where("team_id = ?", teamId).Order("updated_at desc").Find(&projects).Error; err != nil {
 		return nil, err
 	}
 
@@ -20,6 +20,7 @@ func GetListProjects(db *gorm.DB, teamId int) (response []*models.ListProjectsRe
 			ID:          project.ID,
 			ProjectName: project.ProjectName,
 			Icon:        project.Icon,
+			ProjectType: project.ProjectType,
 		})
 	}
 
